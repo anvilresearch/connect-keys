@@ -213,3 +213,72 @@ describe 'AnvilConnectKeys', ->
       keys.jwks.keys[1].alg.should.equal 'RS256'
       keys.jwks.keys[1].e.should.equal 'AQAB'
       expect(base64url.toBuffer(keys.jwks.keys[1].n).length).to.equal 512
+
+  describe 'generate setup token (static)', ->
+    {token} = {}
+
+    before ->
+      token = AnvilConnectKeys.generateSetupToken(
+        path.join cwd, 'tmp', 'setup', 'setup.token'
+      )
+
+    it 'should create the token folder if needed', ->
+      expect(dirExists(path.join cwd, 'tmp', 'setup')).to.be.true
+
+    it 'should generate a 256-byte token', ->
+      token.length.should.equal 512
+
+    it 'should return the token', ->
+      token.should.be.a.string
+
+    it 'should save the token', ->
+      fs.readFileSync(
+        path.join(cwd, 'tmp', 'setup', 'setup.token'),
+        'utf8'
+      ).should.equal token
+
+  describe 'load setup token (static)', ->
+    {token} = {}
+
+    before ->
+      token = AnvilConnectKeys.generateSetupToken(
+        path.join cwd, 'tmp', 'setup', 'setup.token'
+      )
+
+    it 'should load and return the token', ->
+      fs.readFileSync(
+        path.join(cwd, 'tmp', 'setup', 'setup.token'),
+        'utf8'
+      ).should.equal token
+
+  describe 'generate setup token (instance)', ->
+    {token} = {}
+
+    before ->
+      connectKeys = new AnvilConnectKeys path.join cwd, 'tmp'
+      token = connectKeys.generateSetupToken()
+
+    it 'should generate a 256-byte token', ->
+      token.length.should.equal 512
+
+    it 'should return the token', ->
+      token.should.be.a.string
+
+    it 'should save the token', ->
+      fs.readFileSync(
+        path.join(cwd, 'tmp', 'keys', 'setup.token'),
+        'utf8'
+      ).should.equal token
+
+  describe 'load setup token (instance)', ->
+    {token} = {}
+
+    before ->
+      connectKeys = new AnvilConnectKeys path.join cwd, 'tmp'
+      token = connectKeys.loadSetupToken()
+
+    it 'should load and return the token', ->
+      fs.readFileSync(
+        path.join(cwd, 'tmp', 'keys', 'setup.token'),
+        'utf8'
+      ).should.equal token
