@@ -16,7 +16,7 @@ var childProcess = require('child_process')
 
 function AnvilConnectKeys (directory) {
   // base directory for keys to be read from and written to
-  this.directory = path.join(process.cwd(), directory, 'keys')
+  this.directory = path.join(directory || process.cwd(), 'keys')
 
   // signature key pair file paths
   this.sig = {
