@@ -4,7 +4,13 @@
   "description": "Key pair utilities shared between the Anvil Connect server and its CLI",
   "main": "index.js",
   "scripts": {
-    "test": "eslint --ignore-path .gitignore . && mocha test/unit --watch"
+    "test": "eslint --ignore-path .gitignore . && echo Code looks good! && mocha test/unit",
+    "lint": "eslint --ignore-path .gitignore . && echo Code looks good!",
+    "test-watch": "mocha test/unit --watch",
+    "test-integration": "mocha test/integration",
+    "test-integration-watch": "mocha test/integration --watch",
+    "test-all": "mocha test",
+    "test-all-watch": "mocha test --watch"
   },
   "repository": {
     "type": "git",
