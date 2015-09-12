@@ -80,65 +80,70 @@ function generateKeyPair (pub, prv) {
 AnvilConnectKeys.generateKeyPair = generateKeyPair
 
 /**
- * Load
+ * Load key pairs
  */
 
-function loadKeypairs (recurse) {
-  var keys = null
+function loadKeyPairs () {
+  var sig = AnvilConnectKeys.loadKeyPair(this.sig.pub, this.sig.prv, 'sig')
+  var enc = AnvilConnectKeys.loadKeyPair(this.enc.pub, this.enc.prv, 'enc')
 
-  try {
-    keys = {
-      sig: {
-        pub: fs.readFileSync(this.sig.pub).toString('ascii'),
-        prv: fs.readFileSync(this.sig.prv).toString('ascii')
-      },
-      enc: {
-        pub: fs.readFileSync(this.enc.pub).toString('ascii'),
-        prv: fs.readFileSync(this.enc.prv).toString('ascii')
-      }
-    }
-  } catch (err) {}
+  var jwkKeys = []
+  jwkKeys.push(sig.jwk.pub, enc.jwk.pub)
 
-  if (!keys && !!recurse) {
-    this.generate()
-    keys = this.loadKeypairs(false)
-
-    // if the keys still can't be loaded, throw an error
-    if (!keys) {
-      throw new Error(
-        'Unable to read the token-signing key pair from ' + this.directory
-      )
+  return {
+    sig: sig.pem,
+    enc: enc.pem,
+    jwks: {
+      keys: jwkKeys
     }
   }
-
-  // translate pems to jwks
-  var sig = pemjwk.pem2jwk(keys.sig.pub)
-  var enc = pemjwk.pem2jwk(keys.enc.pub)
-
-  // format the JWK set
-  keys.jwks = {
-    keys: [
-      {
-        kty: sig.kty,
-        use: 'sig',
-        alg: 'RS256',
-        n: sig.n,
-        e: sig.e
-      },
-      {
-        kty: enc.kty,
-        use: 'enc',
-        alg: 'RS256',
-        n: enc.n,
-        e: enc.e
-      }
-    ]
-  }
-
-  return keys
 }
 
-AnvilConnectKeys.prototype.loadKeypairs = loadKeypairs
+AnvilConnectKeys.prototype.loadKeyPairs = loadKeyPairs
+
+/**
+ * Load single key pair
+ */
+
+function loadKeyPair (pub, prv, use) {
+  var pubPEM, prvPEM, pubJWK
+
+  try {
+    pubPEM = fs.readFileSync(pub).toString('ascii')
+  } catch (e) {
+    throw new Error('Unable to read the public key from ' + pub)
+  }
+
+  try {
+    prvPEM = fs.readFileSync(prv).toString('ascii')
+  } catch (e) {
+    throw new Error('Unable to read the private key from ' + pub)
+  }
+
+  try {
+    pubJWK = pemjwk.pem2jwk(pubPEM)
+  } catch (e) {
+    throw new Error('Unable to convert the public key ' + pub + ' to a JWK')
+  }
+
+  return {
+    pem: {
+      pub: pubPEM,
+      prv: prvPEM
+    },
+    jwk: {
+      pub: {
+        kty: pubJWK.kty,
+        use: use,
+        alg: 'RS256',
+        n: pubJWK.n,
+        e: pubJWK.e
+      }
+    }
+  }
+}
+
+AnvilConnectKeys.loadKeyPair = loadKeyPair
 
 /**
  * Export
