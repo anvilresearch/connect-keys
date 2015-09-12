@@ -31,6 +31,14 @@ public and private keys both as raw PEM data, and the public key as a JWK. The
 }
 ```
 
+#### AnvilConnectKeys.generateSetupToken(tokenPath)
+Generates a random 256-byte hash and saves it to `tokenPath` using the UTF-8
+encoding. Returns the generated token as a string.
+
+#### AnvilConnectKeys.loadSetupToken(tokenPath)
+Returns the contents of the file at `tokenPath` as a string, decoded using the
+UTF-8 encoding.
+
 ### Instance
 
 #### new AnvilConnectKeys()
@@ -84,3 +92,11 @@ Loads both signing and encryption key pairs from the scoped path.
   }
 }
 ```
+
+#### instance.generateSetupToken()
+Generates a random 256-byte hash and saves it to the scoped path as
+`setup.token` using the UTF-8 encoding. Returns the generated token as a string.
+
+#### instance.loadSetupToken()
+Returns the contents of the `setup.token` file in the scoped path as a string,
+decoded using the UTF-8 encoding.
