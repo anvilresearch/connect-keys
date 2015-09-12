@@ -11,7 +11,6 @@ var path = require('path')
 var pem2jwk = require('pem-jwk').pem2jwk
 var exec = require('child_process').execFileSync
 
-
 /**
  * Constructor
  */
