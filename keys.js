@@ -108,7 +108,7 @@ function loadKeypairs (recurse) {
     // if the keys still can't be loaded, kill the process
     if (!keys) {
       console.log(
-        'Unable to read the token-signing key pair from ' + keyDirectory
+        'Unable to read the token-signing key pair from ' + this.directory
       )
       process.exit(1)
     }
