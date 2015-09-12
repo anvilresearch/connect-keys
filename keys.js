@@ -4,12 +4,11 @@
  * Module dependencies
  */
 
-var cwd = process.cwd()
 var fs = require('fs')
 var mkdirp = require('mkdirp')
 var path = require('path')
-var pem2jwk = require('pem-jwk').pem2jwk
-var exec = require('child_process').execFileSync
+var pemjwk = require('pem-jwk')
+var childProcess = require('child_process')
 
 /**
  * Constructor
@@ -17,7 +16,7 @@ var exec = require('child_process').execFileSync
 
 function AnvilConnectKeys (directory) {
   // base directory for keys to be read from and written to
-  this.directory = path.join(cwd, directory, 'keys')
+  this.directory = path.join(process.cwd(), directory, 'keys')
 
   // signature key pair file paths
   this.sig = {
@@ -54,14 +53,14 @@ function generateKeyPair (pub, prv) {
   try {
     mkdirp.sync(this.directory)
 
-    exec('openssl', [
+    childProcess.execFileSync('openssl', [
       'genrsa',
       '-out',
       prv,
       '4096'
     ])
 
-    exec('openssl', [
+    childProcess.execFileSync('openssl', [
       'rsa',
       '-pubout',
       '-in',
@@ -114,8 +113,8 @@ function loadKeypairs (recurse) {
   }
 
   // translate pems to jwks
-  var sig = pem2jwk(keys.sig.pub)
-  var enc = pem2jwk(keys.enc.pub)
+  var sig = pemjwk.pem2jwk(keys.sig.pub)
+  var enc = pemjwk.pem2jwk(keys.enc.pub)
 
   // format the JWK set
   keys.jwks = {
