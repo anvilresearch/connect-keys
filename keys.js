@@ -69,11 +69,10 @@ function generateKeyPair (pub, prv) {
       pub
     ])
   } catch (e) {
-    console.log(
+    throw new Error(
       'Failed to generate keys using OpenSSL. Please ensure you have OpenSSL ' +
       'installed and configured on your system.'
     )
-    process.exit(1)
   }
 }
 
@@ -103,12 +102,11 @@ function loadKeypairs (recurse) {
     this.generate()
     keys = this.loadKeypairs(false)
 
-    // if the keys still can't be loaded, kill the process
+    // if the keys still can't be loaded, throw an error
     if (!keys) {
-      console.log(
+      throw new Error(
         'Unable to read the token-signing key pair from ' + this.directory
       )
-      process.exit(1)
     }
   }
 
