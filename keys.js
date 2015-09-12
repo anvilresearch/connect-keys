@@ -26,8 +26,8 @@ function AnvilConnectKeys (directory) {
 
   // encryption key pair file paths
   this.enc = {
-    pub: path.join(this.directory, 'sig.rsa.pub.pem'),
-    prv: path.join(this.directory, 'sig.rsa.prv.pem')
+    pub: path.join(this.directory, 'enc.rsa.pub.pem'),
+    prv: path.join(this.directory, 'enc.rsa.prv.pem')
   }
 
   // setup token
