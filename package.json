@@ -1,0 +1,19 @@
+{
+  "name": "anvil-connect-keys",
+  "version": "0.0.0",
+  "description": "Key pair utilities shared between the Anvil Connect server and its CLI",
+  "main": "index.js",
+  "scripts": {
+    "test": "eslint --ignore-path .gitignore . && mocha test --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anvilresearch/connect-keys.git"
+  },
+  "author": "Anvil Research, Inc.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/anvilresearch/connect-keys/issues"
+  },
+  "homepage": "https://github.com/anvilresearch/connect-keys"
+}
