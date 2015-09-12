@@ -59,7 +59,9 @@ function generateKeyPair (pub, prv) {
       '-out',
       prv,
       '4096'
-    ])
+    ], {
+      stdio: 'ignore'
+    })
 
     childProcess.execFileSync('openssl', [
       'rsa',
@@ -68,7 +70,9 @@ function generateKeyPair (pub, prv) {
       prv,
       '-out',
       pub
-    ])
+    ], {
+      stdio: 'ignore'
+    })
   } catch (e) {
     throw new Error(
       'Failed to generate keys using OpenSSL. Please ensure you have OpenSSL ' +
