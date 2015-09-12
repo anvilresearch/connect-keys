@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/anvilresearch/connect-keys/issues"
   },
-  "homepage": "https://github.com/anvilresearch/connect-keys"
+  "homepage": "https://github.com/anvilresearch/connect-keys",
+  "dependencies": {
+    "mkdirp": "^0.5.1",
+    "pem-jwk": "^1.5.1"
+  }
 }
