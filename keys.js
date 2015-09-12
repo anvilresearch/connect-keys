@@ -39,8 +39,8 @@ function AnvilConnectKeys (directory) {
  */
 
 function generateKeyPairs () {
-  this.openssl(this.sig.pub, this.sig.prv)
-  this.openssl(this.enc.pub, this.enc.prv)
+  AnvilConnectKeys.generateKeyPair(this.sig.pub, this.sig.prv)
+  AnvilConnectKeys.generateKeyPair(this.enc.pub, this.enc.prv)
 }
 
 AnvilConnectKeys.prototype.generateKeyPairs = generateKeyPairs
@@ -76,7 +76,7 @@ function generateKeyPair (pub, prv) {
   }
 }
 
-AnvilConnectKeys.prototype.generateKeyPair = generateKeyPair
+AnvilConnectKeys.generateKeyPair = generateKeyPair
 
 /**
  * Load
