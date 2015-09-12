@@ -5,6 +5,7 @@
  */
 
 var fs = require('fs')
+var crypto = require('crypto')
 var mkdirp = require('mkdirp')
 var path = require('path')
 var pemjwk = require('pem-jwk')
@@ -148,6 +149,54 @@ function loadKeyPair (pub, prv, use) {
 }
 
 AnvilConnectKeys.loadKeyPair = loadKeyPair
+
+/**
+ * Generate setup token
+ */
+
+function generateSetupToken (tokenPath) {
+  mkdirp.sync(path.dirname(tokenPath))
+
+  var token = crypto.randomBytes(256).toString('hex')
+  try {
+    fs.writeFileSync(tokenPath, token, 'utf8')
+  } catch (e) {
+    throw new Error('Unable to save setup token to ' + tokenPath)
+  }
+  return token
+}
+
+AnvilConnectKeys.generateSetupToken = generateSetupToken
+
+/**
+ * Load setup token
+ */
+
+function loadSetupToken (tokenPath) {
+  return fs.readFileSync(tokenPath, 'utf8').toString().trim()
+}
+
+AnvilConnectKeys.loadSetupToken = loadSetupToken
+
+/**
+ * Generate setup token from scoped path
+ */
+
+function generateSetupTokenLocal () {
+  return AnvilConnectKeys.generateSetupToken(this.setup)
+}
+
+AnvilConnectKeys.prototype.generateSetupToken = generateSetupTokenLocal
+
+/**
+ * Load setup token from scoped path
+ */
+
+function loadSetupTokenLocal () {
+  return AnvilConnectKeys.loadSetupToken(this.setup)
+}
+
+AnvilConnectKeys.prototype.loadSetupToken = loadSetupTokenLocal
 
 /**
  * Export
