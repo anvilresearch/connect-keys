@@ -3,6 +3,7 @@ cwd = process.cwd()
 fs = require 'fs'
 path = require 'path'
 sinon = require 'sinon'
+crypto = require 'crypto'
 mkdirp = require 'mkdirp'
 childProcess = require 'child_process'
 pemjwk = require 'pem-jwk'
@@ -336,3 +337,165 @@ describe 'AnvilConnectKeys', ->
           alg: 'RS256'
           n: 3
           e: 4
+
+  describe 'generate setup token (static)', ->
+
+    describe 'with sufficient access rights', ->
+      {token} = {}
+
+      before ->
+        sinon.stub mkdirp, 'sync'
+        sinon.stub fs, 'writeFileSync'
+        sinon.stub crypto, 'randomBytes', -> 'SETUP TOKEN'
+        token = AnvilConnectKeys.generateSetupToken '/test/setup.token'
+
+      after ->
+        mkdirp.sync.restore()
+        fs.writeFileSync.restore()
+        crypto.randomBytes.restore()
+
+      it 'should create the key folder if needed', ->
+        mkdirp.sync.should.have.been.calledWith '/test'
+
+      it 'should generate a 256-byte random token', ->
+        crypto.randomBytes.should.have.been.calledWith 256
+
+      it 'should save the token', ->
+        fs.writeFileSync.should.have.been.calledWith(
+          '/test/setup.token', 'SETUP TOKEN', 'utf8'
+        )
+
+      it 'should return the token', ->
+        token.should.equal 'SETUP TOKEN'
+
+    describe 'with insufficient access rights', ->
+      {err} = {}
+
+      before ->
+        sinon.stub(mkdirp, 'sync').throws()
+        sinon.stub fs, 'writeFileSync'
+        sinon.stub crypto, 'randomBytes', -> 'SETUP TOKEN'
+        try
+          token = AnvilConnectKeys.generateSetupToken '/test/setup.token'
+        catch e
+          err = e
+
+      after ->
+        mkdirp.sync.restore()
+        fs.writeFileSync.restore()
+        crypto.randomBytes.restore()
+
+      it 'should throw an error', ->
+        err.should.be.an.instanceof Error
+
+  describe 'load setup token (static)', ->
+
+    describe 'with sufficient access rights', ->
+      {token} = {}
+
+      before ->
+        sinon.stub fs, 'readFileSync', -> 'SETUP TOKEN'
+        token = AnvilConnectKeys.loadSetupToken '/test/setup.token'
+
+      after ->
+        fs.readFileSync.restore()
+
+      it 'should load the token', ->
+        fs.readFileSync.should.have.been.calledWith '/test/setup.token', 'utf8'
+
+      it 'should return the token', ->
+        token.should.equal 'SETUP TOKEN'
+
+    describe 'with insufficient access rights', ->
+      {err} = {}
+
+      before ->
+        sinon.stub(mkdirp, 'sync').throws()
+        sinon.stub fs, 'readFileSync'
+        try
+          token = AnvilConnectKeys.readFileSync '/test/setup.token'
+        catch e
+          err = e
+
+      after ->
+        mkdirp.sync.restore()
+        fs.readFileSync.restore()
+
+      it 'should throw an error', ->
+        err.should.be.an.instanceof Error
+
+  describe 'generate setup token (instance)', ->
+
+    describe 'with no errors during token generation', ->
+      {token} = {}
+
+      before ->
+        sinon.stub AnvilConnectKeys, 'generateSetupToken', -> 'SETUP TOKEN'
+        connectKeys = new AnvilConnectKeys '/test'
+        token = connectKeys.generateSetupToken()
+
+      after ->
+        AnvilConnectKeys.generateSetupToken.restore()
+
+      it 'should generate a token', ->
+        AnvilConnectKeys.generateSetupToken.should.have.been.calledWith(
+          '/test/keys/setup.token'
+        )
+
+      it 'should return the token', ->
+        token.should.equal 'SETUP TOKEN'
+
+    describe 'with errors during token generation', ->
+      {err} = {}
+
+      before ->
+        sinon.stub(AnvilConnectKeys, 'generateSetupToken').throws()
+        connectKeys = new AnvilConnectKeys '/test'
+        try
+          token = connectKeys.generateSetupToken()
+        catch e
+          err = e
+
+      after ->
+        AnvilConnectKeys.generateSetupToken.restore()
+
+      it 'should not trap the error', ->
+        err.should.be.an.instanceof Error
+
+  describe 'load setup token (instance)', ->
+
+    describe 'with sufficient access rights', ->
+      {token} = {}
+
+      before ->
+        sinon.stub AnvilConnectKeys, 'loadSetupToken', -> 'SETUP TOKEN'
+        connectKeys = new AnvilConnectKeys '/test'
+        token = connectKeys.loadSetupToken()
+
+      after ->
+        AnvilConnectKeys.loadSetupToken.restore()
+
+      it 'should load the token', ->
+        AnvilConnectKeys.loadSetupToken.should.have.been.calledWith(
+          '/test/keys/setup.token'
+        )
+
+      it 'should return the token', ->
+        token.should.equal 'SETUP TOKEN'
+
+    describe 'with errors during token loading', ->
+      {err} = {}
+
+      before ->
+        sinon.stub(AnvilConnectKeys, 'loadSetupToken').throws()
+        connectKeys = new AnvilConnectKeys '/test'
+        try
+          token = connectKeys.loadSetupToken()
+        catch e
+          err = e
+
+      after ->
+        AnvilConnectKeys.loadSetupToken.restore()
+
+      it 'should not trap the error', ->
+        err.should.be.an.instanceof Error
