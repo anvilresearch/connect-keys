@@ -307,6 +307,9 @@ describe 'AnvilConnectKeys', ->
         connectKeys = new AnvilConnectKeys '/test'
         keys = connectKeys.loadKeyPairs()
 
+      after ->
+        AnvilConnectKeys.loadKeyPair.restore()
+
       it 'should return the PEM public signing key', ->
         keys.sig.pub.should.equal 'PUBLIC SIGNING PEM'
 
