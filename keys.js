@@ -35,7 +35,7 @@ function AnvilConnectKeys (directory) {
 }
 
 /**
- * Generate keys
+ * Generate key pairs
  */
 
 function generateKeyPairs () {
@@ -46,7 +46,7 @@ function generateKeyPairs () {
 AnvilConnectKeys.prototype.generateKeyPairs = generateKeyPairs
 
 /**
- * OpenSSL
+ * Generate single key pair
  */
 
 function generateKeyPair (pub, prv) {
