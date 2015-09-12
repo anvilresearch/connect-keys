@@ -51,7 +51,8 @@ AnvilConnectKeys.prototype.generateKeyPairs = generateKeyPairs
 
 function generateKeyPair (pub, prv) {
   try {
-    mkdirp.sync(this.directory)
+    mkdirp.sync(path.dirname(pub))
+    mkdirp.sync(path.dirname(prv))
 
     childProcess.execFileSync('openssl', [
       'genrsa',
