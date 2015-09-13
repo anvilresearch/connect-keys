@@ -15,7 +15,7 @@ chai.use sinonChai
 chai.should()
 
 # Module to be tested
-AnvilConnectKeys = require path.join cwd, 'keys'
+AnvilConnectKeys = require path.join cwd, 'index'
 
 fsExists = (path) ->
   try
