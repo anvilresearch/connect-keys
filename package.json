@@ -4,7 +4,7 @@
   "description": "Key pair utilities shared between the Anvil Connect server and its CLI",
   "main": "index.js",
   "scripts": {
-    "test": "eslint --ignore-path .gitignore . && echo Code looks good! && mocha test/unit",
+    "test": "mocha test/unit && eslint --ignore-path .gitignore . && echo Code looks good!",
     "lint": "eslint --ignore-path .gitignore . && echo Code looks good!",
     "test-watch": "mocha test/unit --watch",
     "test-integration": "mocha test/integration",
