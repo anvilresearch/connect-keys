@@ -1,0 +1,15 @@
+sudo: false
+
+language: node_js
+
+node_js:
+  - "4.0"
+  - "iojs"
+  - "0.12"
+
+before_install:
+  - npm install -g npm
+
+script: 
+  - npm run test-all
+  - npm run lint
