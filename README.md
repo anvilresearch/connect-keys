@@ -1,4 +1,6 @@
 # connect-keys
+[![Build Status](https://travis-ci.org/anvilresearch/connect-keys.svg?branch=master)](https://travis-ci.org/anvilresearch/connect-keys)
+
 Key pair utilities shared between the Anvil Connect server and its CLI
 
 ## Methods
